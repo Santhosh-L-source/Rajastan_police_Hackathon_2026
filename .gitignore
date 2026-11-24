@@ -1,3 +1,9 @@
+# Claude/AI config directories
+.agents/
+.claude/
+.gemini/
+.impeccable/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -70,3 +76,12 @@ frontend/dev.log
 # Reports
 reports/*.pdf
 !reports/.gitkeep
+
+# Documentation (exclude skill guides)
+*-guide.md
+!README.md
+DEMO.md
+SECURITY.md
+SECURITY_FIXES.md
+SYSTEM_STATUS.md
+PRODUCT.md
