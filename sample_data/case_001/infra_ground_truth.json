@@ -1,0 +1,243 @@
+{
+  "case_id": "case_001",
+  "clusters": [
+    {
+      "id": "cluster_1",
+      "domains": [
+        {
+          "domain": "axis-secure680.com",
+          "ip": "185.149.233.248",
+          "registrar": "HOSTINGER",
+          "creation_date": "2026-05-30T16:20:13.705844",
+          "name_servers": "ns1.scamhost.com,ns2.scamhost.com",
+          "hosting_provider": "BulletproofHost LLC",
+          "asn": "AS12345",
+          "linked_upi_id": "sunil@paytm",
+          "linked_phone": "+918239194420",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "axis-verify337.com",
+          "ip": "185.149.233.248",
+          "registrar": "HOSTINGER",
+          "creation_date": "2026-05-30T17:16:20.322129",
+          "name_servers": "ns1.scamhost.com,ns2.scamhost.com",
+          "hosting_provider": "BulletproofHost LLC",
+          "asn": "AS12345",
+          "linked_upi_id": "amit@phonepe",
+          "linked_phone": "+917830159750",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "hdfc-secure456.com",
+          "ip": "185.149.233.248",
+          "registrar": "HOSTINGER",
+          "creation_date": "2026-05-30T16:52:11.581223",
+          "name_servers": "ns1.scamhost.com,ns2.scamhost.com",
+          "hosting_provider": "BulletproofHost LLC",
+          "asn": "AS12345",
+          "linked_upi_id": "raj@paytm",
+          "linked_phone": "+919025859891",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "icici-verify653.com",
+          "ip": "185.149.233.248",
+          "registrar": "HOSTINGER",
+          "creation_date": "2026-05-30T16:54:44.963123",
+          "name_servers": "ns1.scamhost.com,ns2.scamhost.com",
+          "hosting_provider": "BulletproofHost LLC",
+          "asn": "AS12345",
+          "linked_upi_id": "raj@paytm",
+          "linked_phone": "+917270148938",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "axis-update312.com",
+          "ip": "185.149.233.248",
+          "registrar": "HOSTINGER",
+          "creation_date": "2026-05-30T15:45:12.943090",
+          "name_servers": "ns1.scamhost.com,ns2.scamhost.com",
+          "hosting_provider": "BulletproofHost LLC",
+          "asn": "AS12345",
+          "linked_upi_id": "sunil@phonepe",
+          "linked_phone": "+919855256078",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "icici-update802.com",
+          "ip": "185.149.233.248",
+          "registrar": "HOSTINGER",
+          "creation_date": "2026-05-30T16:05:19.163282",
+          "name_servers": "ns1.scamhost.com,ns2.scamhost.com",
+          "hosting_provider": "BulletproofHost LLC",
+          "asn": "AS12345",
+          "linked_upi_id": "raj@paytm",
+          "linked_phone": "+918737548056",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "axis-secure893.com",
+          "ip": "185.149.233.248",
+          "registrar": "HOSTINGER",
+          "creation_date": "2026-05-30T16:15:29.918206",
+          "name_servers": "ns1.scamhost.com,ns2.scamhost.com",
+          "hosting_provider": "BulletproofHost LLC",
+          "asn": "AS12345",
+          "linked_upi_id": "sunil@paytm",
+          "linked_phone": "+918483972120",
+          "is_scam": "true",
+          "case_id": "case_001"
+        }
+      ]
+    },
+    {
+      "id": "cluster_2",
+      "domains": [
+        {
+          "domain": "customer-support-368.com",
+          "ip": "192.105.95.181",
+          "registrar": "NAMECHEAP",
+          "creation_date": "2026-06-01T15:19:48.359279",
+          "name_servers": "ns3.shadyhost.net,ns4.shadyhost.net",
+          "hosting_provider": "ShieldHost",
+          "asn": "AS67890",
+          "linked_upi_id": "neha@paytm",
+          "linked_phone": "+918854515713",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "customer-support-384.com",
+          "ip": "192.105.95.181",
+          "registrar": "NAMECHEAP",
+          "creation_date": "2026-06-01T15:19:48.359279",
+          "name_servers": "ns3.shadyhost.net,ns4.shadyhost.net",
+          "hosting_provider": "ShieldHost",
+          "asn": "AS67890",
+          "linked_upi_id": "priya@paytm",
+          "linked_phone": "+919941484390",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "customer-help-947.com",
+          "ip": "192.105.95.181",
+          "registrar": "NAMECHEAP",
+          "creation_date": "2026-06-06T15:19:48.359279",
+          "name_servers": "ns3.shadyhost.net,ns4.shadyhost.net",
+          "hosting_provider": "ShieldHost",
+          "asn": "AS67890",
+          "linked_upi_id": "neha@paytm",
+          "linked_phone": "+919140833792",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "customer-help-418.com",
+          "ip": "192.146.177.136",
+          "registrar": "NAMECHEAP",
+          "creation_date": "2026-05-30T15:19:48.359279",
+          "name_servers": "ns3.shadyhost.net,ns4.shadyhost.net",
+          "hosting_provider": "ShieldHost",
+          "asn": "AS67890",
+          "linked_upi_id": "neha@paytm",
+          "linked_phone": "+917283246709",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "customer-support-689.com",
+          "ip": "192.105.95.181",
+          "registrar": "NAMECHEAP",
+          "creation_date": "2026-06-06T15:19:48.359279",
+          "name_servers": "ns3.shadyhost.net,ns4.shadyhost.net",
+          "hosting_provider": "ShieldHost",
+          "asn": "AS67890",
+          "linked_upi_id": "neha@paytm",
+          "linked_phone": "+919902651262",
+          "is_scam": "true",
+          "case_id": "case_001"
+        }
+      ]
+    },
+    {
+      "id": "cluster_3",
+      "domains": [
+        {
+          "domain": "statebnak.com",
+          "ip": "203.254.208.118",
+          "registrar": "GODADDY",
+          "creation_date": "2026-06-04T15:19:48.359279",
+          "name_servers": "ns3.parkingcrew.net,ns3.parkingcrew.net",
+          "hosting_provider": "CloudFront",
+          "asn": "AS13335",
+          "linked_upi_id": "merchant911@paytm",
+          "linked_phone": "+917862691739",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "statebnk.com",
+          "ip": "203.240.115.250",
+          "registrar": "GODADDY",
+          "creation_date": "2026-05-31T15:19:48.359279",
+          "name_servers": "ns2.parkingcrew.net,ns3.parkingcrew.net",
+          "hosting_provider": "CloudFront",
+          "asn": "AS13335",
+          "linked_upi_id": "merchant419@paytm",
+          "linked_phone": "+918449794583",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "stat3bank.com",
+          "ip": "203.196.18.16",
+          "registrar": "GODADDY",
+          "creation_date": "2026-06-03T15:19:48.359279",
+          "name_servers": "ns9.parkingcrew.net,ns6.parkingcrew.net",
+          "hosting_provider": "CloudFront",
+          "asn": "AS13335",
+          "linked_upi_id": "merchant574@paytm",
+          "linked_phone": "+917246931979",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "statebank0nline.com",
+          "ip": "203.149.72.174",
+          "registrar": "GODADDY",
+          "creation_date": "2026-06-01T15:19:48.359279",
+          "name_servers": "ns2.parkingcrew.net,ns5.parkingcrew.net",
+          "hosting_provider": "CloudFront",
+          "asn": "AS13335",
+          "linked_upi_id": "merchant257@paytm",
+          "linked_phone": "+918073820075",
+          "is_scam": "true",
+          "case_id": "case_001"
+        },
+        {
+          "domain": "statehank.com",
+          "ip": "203.219.53.109",
+          "registrar": "GODADDY",
+          "creation_date": "2026-05-30T15:19:48.359279",
+          "name_servers": "ns9.parkingcrew.net,ns6.parkingcrew.net",
+          "hosting_provider": "CloudFront",
+          "asn": "AS13335",
+          "linked_upi_id": "merchant350@paytm",
+          "linked_phone": "+917410706053",
+          "is_scam": "true",
+          "case_id": "case_001"
+        }
+      ]
+    }
+  ],
+  "num_scam_domains": 17,
+  "num_clusters": 3
+}

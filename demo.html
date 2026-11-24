@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINTRACE - System Operational Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #1a1a1a;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #1a1a1a;
+            font-size: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            width: 24px;
+            height: 24px;
+            background: #667eea;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .metric-value {
+            color: #1a1a1a;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .metric-value.success {
+            color: #10b981;
+        }
+
+        .metric-value.warning {
+            color: #f59e0b;
+        }
+
+        .metric-value.info {
+            color: #3b82f6;
+        }
+
+        .test-results {
+            background: #f0fdf4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #10b981;
+        }
+
+        .test-results h3 {
+            color: #166534;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 13px;
+        }
+
+        .commands {
+            background: #1f2937;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .command-line {
+            margin: 5px 0;
+            color: #10b981;
+        }
+
+        .command-comment {
+            color: #9ca3af;
+        }
+
+        .api-endpoints {
+            background: #fefce8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #eab308;
+        }
+
+        .endpoint {
+            display: flex;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #fef3c7;
+        }
+
+        .endpoint:last-child {
+            border-bottom: none;
+        }
+
+        .method {
+            background: #3b82f6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 11px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .method.post {
+            background: #10b981;
+        }
+
+        .method.get {
+            background: #3b82f6;
+        }
+
+        .path {
+            font-family: 'Courier New', monospace;
+            color: #1a1a1a;
+        }
+
+        .footer {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .footer-text {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .action-button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+
+        .action-button:hover {
+            background: #5568d3;
+        }
+
+        .action-button.secondary {
+            background: #64748b;
+        }
+
+        .action-button.secondary:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚔 FINTRACE System Operational</h1>
+            <div class="subtitle">Financial & Infrastructure Intelligence for Cyber Crime</div>
+            <div class="subtitle" style="font-size: 13px; margin-bottom: 15px;">Rajasthan Police Hackathon 2026 - Problem Statement PS05</div>
+            <span class="status-badge">✓ FULLY OPERATIONAL</span>
+        </div>
+
+        <div class="grid">
+            <!-- Financial Intelligence -->
+            <div class="card">
+                <h2><span class="card-icon">💰</span>Financial Intelligence</h2>
+                <div class="metric">
+                    <span class="metric-label">Transactions Parsed</span>
+                    <span class="metric-value info">17 txns</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Graph Nodes</span>
+                    <span class="metric-value info">15 accounts</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Money Traced</span>
+                    <span class="metric-value info">Rs.235,052</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Risk Accounts</span>
+                    <span class="metric-value warning">1 MEDIUM</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Top 10 Recovery</span>
+                    <span class="metric-value success">Rs.116,008</span>
+                </div>
+            </div>
+
+            <!-- Infrastructure Intelligence -->
+            <div class="card">
+                <h2><span class="card-icon">🌐</span>Infrastructure Intelligence</h2>
+                <div class="metric">
+                    <span class="metric-label">Domains Analyzed</span>
+                    <span class="metric-value info">29 domains</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Scam Domains</span>
+                    <span class="metric-value warning">17 scam</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Clusters Detected</span>
+                    <span class="metric-value info">4 clusters</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Precision</span>
+                    <span class="metric-value success">100.00%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Recall / F1 Score</span>
+                    <span class="metric-value success">100.00%</span>
+                </div>
+            </div>
+
+            <!-- Unified Graph -->
+            <div class="card">
+                <h2><span class="card-icon">🔗</span>Unified Graph</h2>
+                <div class="metric">
+                    <span class="metric-label">Total Nodes</span>
+                    <span class="metric-value info">97 nodes</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Total Edges</span>
+                    <span class="metric-value info">136 edges</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Node Types</span>
+                    <span class="metric-value info">7 types</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Cross-Links</span>
+                    <span class="metric-value success">Financial ↔ Digital</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Path Finding</span>
+                    <span class="metric-value success">Operational</span>
+                </div>
+            </div>
+
+            <!-- AI Assistant -->
+            <div class="card">
+                <h2><span class="card-icon">🤖</span>AI Assistant</h2>
+                <div class="metric">
+                    <span class="metric-label">NL Query Parser</span>
+                    <span class="metric-value success">Rule-based ✓</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Intent Types</span>
+                    <span class="metric-value info">10 intents</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Evidence Grounding</span>
+                    <span class="metric-value success">Enabled ✓</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Claude API Fallback</span>
+                    <span class="metric-value success">Optional</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Audit Logging</span>
+                    <span class="metric-value success">Enabled ✓</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="card">
+            <h2><span class="card-icon">✓</span>Test Coverage</h2>
+            <div class="test-results">
+                <h3>All Tests Passing ✓</h3>
+                <div class="test-item">
+                    <span>backend/ingest/tests</span>
+                    <span style="color: #10b981; font-weight: 600;">8/8 ✓</span>
+                </div>
+                <div class="test-item">
+                    <span>backend/graph/tests</span>
+                    <span style="color: #10b981; font-weight: 600;">11/11 ✓</span>
+                </div>
+                <div class="test-item">
+                    <span>backend/infra/tests</span>
+                    <span style="color: #10b981; font-weight: 600;">7/7 ✓</span>
+                </div>
+                <div class="test-item">
+                    <span>backend/assistant/tests</span>
+                    <span style="color: #10b981; font-weight: 600;">8/8 ✓</span>
+                </div>
+                <div class="test-item" style="border-top: 2px solid #10b981; padding-top: 10px; margin-top: 10px;">
+                    <span style="font-weight: 600;">TOTAL</span>
+                    <span style="color: #10b981; font-weight: 700;">34/34 ✓</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="card">
+            <h2><span class="card-icon">🔌</span>API Endpoints</h2>
+            <div class="api-endpoints">
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/cases</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/cases</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/cases/{id}/upload</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/cases/{id}/analyze</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/cases/{id}/graph</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/cases/{id}/suspects</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/cases/{id}/freeze-priority</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/cases/{id}/report</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/accounts/{acc}/linked-cases</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Commands -->
+        <div class="card">
+            <h2><span class="card-icon">⚡</span>Quick Start Commands</h2>
+            <div class="commands">
+                <div class="command-comment"># Run complete demo</div>
+                <div class="command-line">$ python quick_demo.py</div>
+                <br>
+                <div class="command-comment"># Run evaluations</div>
+                <div class="command-line">$ python scripts/evaluate.py</div>
+                <div class="command-line">$ python scripts/evaluate_infra.py</div>
+                <br>
+                <div class="command-comment"># Run all tests</div>
+                <div class="command-line">$ pytest backend/ -v</div>
+                <br>
+                <div class="command-comment"># Start API server</div>
+                <div class="command-line">$ python -m uvicorn backend.api.main:app --reload --port 8000</div>
+                <br>
+                <div class="command-comment"># Access API docs</div>
+                <div class="command-line">$ open http://localhost:8000/docs</div>
+            </div>
+        </div>
+
+        <!-- Security Status -->
+        <div class="card">
+            <h2><span class="card-icon">🔒</span>Security Status</h2>
+            <div class="metric">
+                <span class="metric-label">Path Traversal Protection</span>
+                <span class="metric-value success">ENABLED ✓</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">File Type Validation</span>
+                <span class="metric-value success">ENABLED ✓</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">File Size Limits</span>
+                <span class="metric-value success">10MB Max ✓</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">CORS</span>
+                <span class="metric-value success">Restricted ✓</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">SQL Injection</span>
+                <span class="metric-value success">SAFE (ORM) ✓</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Input Validation</span>
+                <span class="metric-value success">ENABLED ✓</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">
+                <strong>FINTRACE v1.0.0</strong> - Ready for Rajasthan Police Hackathon 2026
+            </div>
+            <div>
+                <a href="http://localhost:8000/docs" class="action-button" target="_blank">
+                    Open API Docs →
+                </a>
+                <a href="file:///C:/Users/victus/OneDrive/Attachments/OneDrive/Desktop/rajastahn/README.md" class="action-button secondary" target="_blank">
+                    View Documentation
+                </a>
+            </div>
+            <div style="margin-top: 20px; color: #10b981; font-weight: 600;">
+                System Status: ✅ FULLY OPERATIONAL
+            </div>
+        </div>
+    </div>
+</body>
+</html>
