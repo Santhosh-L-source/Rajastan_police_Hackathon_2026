@@ -77,6 +77,9 @@ frontend/dev.log
 reports/*.pdf
 !reports/.gitkeep
 
+# Screenshots (keep local only)
+docs/screenshots/
+
 # Documentation (exclude skill guides)
 *-guide.md
 !README.md
