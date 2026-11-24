@@ -42,14 +42,14 @@ def parse_infra_csv(filepath: Path) -> List[Domain]:
 
             domain = Domain(
                 domain=row['domain'],
-                ip=row.get('ip') or None,
+                ip=row.get('ip') or row.get('ip_addresses') or None,
                 registrar=row.get('registrar') or None,
                 creation_date=creation_date,
                 name_servers=name_servers,
                 hosting_provider=row.get('hosting_provider') or None,
                 asn=row.get('asn') or None,
-                linked_upi_id=row.get('linked_upi_id') or None,
-                linked_phone=row.get('linked_phone') or None,
+                linked_upi_id=row.get('linked_upi_id') or row.get('upi_ids') or None,
+                linked_phone=row.get('linked_phone') or row.get('phone_numbers') or None,
                 is_scam=row.get('is_scam', '').lower() == 'true',
                 case_id=row.get('case_id')
             )

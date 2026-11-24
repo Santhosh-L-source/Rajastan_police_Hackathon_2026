@@ -49,3 +49,13 @@ class LinkedCasesResponse(BaseModel):
     account: str
     linked_cases: List[Dict[str, Any]]
     is_repeat_offender: bool
+
+class AskRequest(BaseModel):
+    query: str
+
+class AskResponse(BaseModel):
+    query: str
+    intent: str
+    answer: str
+    evidence: List[Dict[str, Any]]
+    explanation: str

@@ -77,9 +77,12 @@ def normalize_transaction(parsed: Dict, file_account: str) -> Dict:
     description = parsed.get("description", "")
     other_account = extract_account_from_description(description)
 
-    # Determine from/to based on direction
+    # Determine from/to: preserve explicit universal_csv accounts if present
     direction = parsed.get("direction", "debit")
-    if direction == "debit":
+    if parsed.get("from_account") and parsed.get("to_account"):
+        from_account = parsed["from_account"]
+        to_account = parsed["to_account"]
+    elif direction == "debit":
         from_account = file_account
         to_account = other_account or "EXTERNAL"
     else:  # credit

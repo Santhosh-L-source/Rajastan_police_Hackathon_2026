@@ -91,3 +91,17 @@ class AuditLog:
 
 # Global audit log instance
 audit_log = AuditLog()
+
+def log_query(query: str, intent: str, case_id: str, user: str = "investigator"):
+    """Convenience function to log a query."""
+    audit_log.log_query(
+        case_id=case_id,
+        user=user,
+        query=query,
+        intent=intent,
+        result={"success": True, "explanation": f"Intent: {intent}"}
+    )
+
+def get_audit_log(limit: int = 100):
+    """Convenience function to get audit logs."""
+    return audit_log.get_logs(limit=limit)

@@ -1,30 +1,11 @@
-domain,ip,registrar,creation_date,name_servers,hosting_provider,asn,linked_upi_id,linked_phone,is_scam,case_id
-hdfc-secure456.com,185.149.233.248,HOSTINGER,2026-05-30T16:52:11.581223,"ns1.scamhost.com,ns2.scamhost.com",BulletproofHost LLC,AS12345,raj@paytm,+919025859891,true,case_001
-axis-secure893.com,185.149.233.248,HOSTINGER,2026-05-30T16:15:29.918206,"ns1.scamhost.com,ns2.scamhost.com",BulletproofHost LLC,AS12345,sunil@paytm,+918483972120,true,case_001
-icici-update802.com,185.149.233.248,HOSTINGER,2026-05-30T16:05:19.163282,"ns1.scamhost.com,ns2.scamhost.com",BulletproofHost LLC,AS12345,raj@paytm,+918737548056,true,case_001
-customer-support-689.com,192.105.95.181,NAMECHEAP,2026-06-06T15:19:48.359279,"ns3.shadyhost.net,ns4.shadyhost.net",ShieldHost,AS67890,neha@paytm,+919902651262,true,case_001
-statebnak.com,203.254.208.118,GODADDY,2026-06-04T15:19:48.359279,"ns3.parkingcrew.net,ns3.parkingcrew.net",CloudFront,AS13335,merchant911@paytm,+917862691739,true,case_001
-customer-support-384.com,192.105.95.181,NAMECHEAP,2026-06-01T15:19:48.359279,"ns3.shadyhost.net,ns4.shadyhost.net",ShieldHost,AS67890,priya@paytm,+919941484390,true,case_001
-market857.com,225.113.113.171,NAMECHEAP,2025-11-14T15:19:48.359728,"ns1.google.com,ns2.google.com",AWS,AS14415,,,false,case_001
-store847.com,235.151.201.171,GODADDY,2025-05-14T15:19:48.359796,"ns1.cloudflare.com,ns2.cloudflare.com",AWS,AS77705,,,false,case_001
-statebnk.com,203.240.115.250,GODADDY,2026-05-31T15:19:48.359279,"ns2.parkingcrew.net,ns3.parkingcrew.net",CloudFront,AS13335,merchant419@paytm,+918449794583,true,case_001
-market512.com,103.164.14.191,GODADDY,2025-03-06T15:19:48.359669,"ns1.cloudflare.com,ns2.cloudflare.com",AWS,AS97153,,,false,case_001
-customer-help-947.com,192.105.95.181,NAMECHEAP,2026-06-06T15:19:48.359279,"ns3.shadyhost.net,ns4.shadyhost.net",ShieldHost,AS67890,neha@paytm,+919140833792,true,case_001
-deals733.com,237.216.15.4,CLOUDFLARE,2025-05-11T15:19:48.359742,"ns1.google.com,ns2.aws.com",Azure,AS28802,,,false,case_001
-shop249.com,88.32.95.7,CLOUDFLARE,2024-03-19T15:19:48.359684,"ns1.google.com,ns2.cloudflare.com",Azure,AS97986,,,false,case_001
-stat3bank.com,203.196.18.16,GODADDY,2026-06-03T15:19:48.359279,"ns9.parkingcrew.net,ns6.parkingcrew.net",CloudFront,AS13335,merchant574@paytm,+917246931979,true,case_001
-axis-verify337.com,185.149.233.248,HOSTINGER,2026-05-30T17:16:20.322129,"ns1.scamhost.com,ns2.scamhost.com",BulletproofHost LLC,AS12345,amit@phonepe,+917830159750,true,case_001
-store112.com,4.163.102.220,CLOUDFLARE,2024-10-14T15:19:48.359618,"ns1.google.com,ns2.cloudflare.com",Google Cloud,AS41263,,,false,case_001
-statebank0nline.com,203.149.72.174,GODADDY,2026-06-01T15:19:48.359279,"ns2.parkingcrew.net,ns5.parkingcrew.net",CloudFront,AS13335,merchant257@paytm,+918073820075,true,case_001
-axis-update312.com,185.149.233.248,HOSTINGER,2026-05-30T15:45:12.943090,"ns1.scamhost.com,ns2.scamhost.com",BulletproofHost LLC,AS12345,sunil@phonepe,+919855256078,true,case_001
-shop739.com,205.116.87.134,NAMECHEAP,2026-03-19T15:19:48.359768,"ns1.aws.com,ns2.google.com",Google Cloud,AS24241,,,false,case_001
-customer-help-418.com,192.146.177.136,NAMECHEAP,2026-05-30T15:19:48.359279,"ns3.shadyhost.net,ns4.shadyhost.net",ShieldHost,AS67890,neha@paytm,+917283246709,true,case_001
-axis-secure680.com,185.149.233.248,HOSTINGER,2026-05-30T16:20:13.705844,"ns1.scamhost.com,ns2.scamhost.com",BulletproofHost LLC,AS12345,sunil@paytm,+918239194420,true,case_001
-market106.com,62.92.56.165,NAMECHEAP,2025-12-22T15:19:48.359782,"ns1.google.com,ns2.cloudflare.com",Azure,AS30716,,,false,case_001
-market582.com,170.51.142.152,HOSTINGER,2025-09-08T15:19:48.359648,"ns1.cloudflare.com,ns2.cloudflare.com",Google Cloud,AS55291,,,false,case_001
-icici-verify653.com,185.149.233.248,HOSTINGER,2026-05-30T16:54:44.963123,"ns1.scamhost.com,ns2.scamhost.com",BulletproofHost LLC,AS12345,raj@paytm,+917270148938,true,case_001
-customer-support-368.com,192.105.95.181,NAMECHEAP,2026-06-01T15:19:48.359279,"ns3.shadyhost.net,ns4.shadyhost.net",ShieldHost,AS67890,neha@paytm,+918854515713,true,case_001
-statehank.com,203.219.53.109,GODADDY,2026-05-30T15:19:48.359279,"ns9.parkingcrew.net,ns6.parkingcrew.net",CloudFront,AS13335,merchant350@paytm,+917410706053,true,case_001
-market625.com,170.161.141.54,GODADDY,2025-05-04T15:19:48.359700,"ns1.google.com,ns2.google.com",Google Cloud,AS49348,,,false,case_001
-deals865.com,207.220.163.16,NAMECHEAP,2024-09-07T15:19:48.359755,"ns1.aws.com,ns2.google.com",Azure,AS25883,,,false,case_001
-market852.com,66.62.226.112,GODADDY,2025-05-08T15:19:48.359715,"ns1.aws.com,ns2.cloudflare.com",AWS,AS16503,,,false,case_001
+domain,ip_addresses,name_servers,registrar,creation_date,asn,upi_ids,phone_numbers,is_scam
+sbi-login.com,103.21.244.15,"ns1.scamhost.com,ns2.scamhost.com",GoDaddy,2024-01-10,AS13335,MULE_L1_03@paytm,+91-9876543210,true
+sbionline-secure.com,103.21.244.15,"ns1.scamhost.com,ns2.scamhost.com",GoDaddy,2024-01-10,AS13335,,,true
+sbi-verify.com,103.21.244.15,"ns1.scamhost.com,ns2.scamhost.com",GoDaddy,2024-01-10,AS13335,,,true
+sbionlinebanking.net,103.21.244.15,"ns1.scamhost.com,ns2.scamhost.com",GoDaddy,2024-01-11,AS13335,,,true
+sbi-account.com,103.21.244.15,"ns1.scamhost.com,ns2.scamhost.com",GoDaddy,2024-01-11,AS13335,,,true
+hdfc-netbanking.com,185.70.40.22,"ns1.bulletproof.xyz,ns2.bulletproof.xyz",Namecheap,2024-01-12,AS62904,MULE_L1_05@paytm,+91-8765432109,true
+hdfcbank-login.in,185.70.40.22,"ns1.bulletproof.xyz,ns2.bulletproof.xyz",Namecheap,2024-01-12,AS62904,,,true
+secure-hdfc.com,185.70.40.22,"ns1.bulletproof.xyz,ns2.bulletproof.xyz",Namecheap,2024-01-12,AS62904,,,true
+hdfc-otp-verify.com,185.70.40.22,"ns1.bulletproof.xyz,ns2.bulletproof.xyz",Namecheap,2024-01-12,AS62904,,,true
+hdfconline-secure.net,185.70.40.22,"ns1.bulletproof.xyz,ns2.bulletproof.xyz",Namecheap,2024-01-13,AS62904,,,true

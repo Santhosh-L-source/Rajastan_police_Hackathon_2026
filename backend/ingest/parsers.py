@@ -21,7 +21,10 @@ def detect_format(filepath: Path) -> str:
     if suffix == ".csv":
         try:
             df = pd.read_csv(filepath, nrows=1)
-            if "Txn Date" in df.columns and "Ref No." in df.columns:
+            # Universal format with explicit from/to accounts
+            if "from_account" in df.columns and "to_account" in df.columns:
+                return "universal_csv"
+            elif "Txn Date" in df.columns and "Ref No." in df.columns:
                 return "sbi_csv"
             elif "Date" in df.columns and "Withdrawal Amt." in df.columns:
                 return "hdfc_csv"
@@ -52,6 +55,46 @@ def detect_format(filepath: Path) -> str:
             return "unknown"
 
     return "unknown"
+
+def parse_universal_csv(filepath: Path) -> List[Dict]:
+    """Parse universal CSV format with from_account/to_account columns."""
+    try:
+        df = pd.read_csv(filepath)
+        required = ["from_account", "to_account", "amount", "timestamp"]
+        if not all(col in df.columns for col in required):
+            raise ParseError(f"Missing required columns in universal CSV: {required}")
+
+        transactions = []
+        for _, row in df.iterrows():
+            # Parse timestamp
+            try:
+                txn_date = pd.to_datetime(row["timestamp"], errors="coerce")
+            except:
+                txn_date = None
+
+            if pd.isna(txn_date):
+                continue
+
+            transactions.append({
+                "timestamp": txn_date,
+                "txn_id": row.get("txn_id", f"TXN_{len(transactions)+1:04d}"),
+                "account": str(row["from_account"]),
+                "from_account": str(row["from_account"]),
+                "to_account": str(row["to_account"]),
+                "amount": float(row["amount"]),
+                "direction": "DEBIT",
+                "mode": "TRANSFER",
+                "description": f"Transfer to {row['to_account']}",
+                "narration": f"Transfer to {row['to_account']}",
+                "balance": None,
+                "bank": "UNIVERSAL",
+                "raw": dict(row)
+            })
+
+        return transactions
+
+    except Exception as e:
+        raise ParseError(f"Failed to parse universal CSV: {str(e)}")
 
 def parse_sbi_csv(filepath: Path, bank_name: str = "SBI") -> List[Dict]:
     """Parse SBI-format CSV statement."""
@@ -265,7 +308,9 @@ def parse_statement(filepath: Path, format_hint: Optional[str] = None) -> List[D
             break
 
     # Route to appropriate parser
-    if format_hint == "sbi_csv":
+    if format_hint == "universal_csv":
+        return parse_universal_csv(filepath)
+    elif format_hint == "sbi_csv":
         return parse_sbi_csv(filepath, bank_name)
     elif format_hint == "hdfc_excel" or format_hint == "hdfc_csv":
         return parse_hdfc_excel(filepath, bank_name)

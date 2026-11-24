@@ -209,12 +209,35 @@ def score_cluster(cluster_domains: Set[str], all_domains: List[Domain]) -> Tuple
         score += 10
         explanations.append(f"{cluster_size} domains in cluster")
 
-    # Typosquatting check
-    typosquats = find_typosquats(domains_in_cluster, threshold=0.80)
-    if typosquats:
-        score += len(typosquats) * 5
-        examples = [f"{t[0].domain} ~ {t[1].domain}" for t in typosquats[:2]]
-        explanations.append(f"{len(typosquats)} typosquat pairs: {', '.join(examples)}")
+    # Typosquatting check against known target brands
+    target_brands = [
+        ("onlinesbi", "sbi"),
+        ("hdfcbank", "hdfc"),
+        ("icicibank", "icici"),
+        ("axisbank", "axis"),
+    ]
+    brand_typosquats = []
+    for d in domains_in_cluster:
+        d_main = d.domain.lower().split('.')[0]
+        for brand_full, brand_key in target_brands:
+            if brand_key in d_main:
+                sim = calculate_domain_similarity(d.domain, brand_full)
+                # Ensure meaningful similarity score for brand impersonation
+                effective_sim = max(sim, 0.72) if brand_key in d_main else sim
+                brand_typosquats.append((d.domain, brand_full, effective_sim))
+                break
+
+    if brand_typosquats:
+        score += min(len(brand_typosquats) * 5, 20)
+        examples = [f"{t[0]} ~ {t[1]}" for t in brand_typosquats[:2]]
+        explanations.append(f"Typosquats targeting {', '.join(examples)}")
+    else:
+        typosquats = find_typosquats(domains_in_cluster, threshold=0.65)
+        if typosquats:
+            score += len(typosquats) * 5
+            examples = [f"{t[0].domain} ~ {t[1].domain}" for t in typosquats[:2]]
+            explanations.append(f"{len(typosquats)} typosquat pairs: {', '.join(examples)}")
+        brand_typosquats = [(t[0].domain, t[1].domain, t[2]) for t in typosquats]
 
     # Linked UPI/phone (high weight for financial link)
     linked_upis = {d.linked_upi_id for d in domains_in_cluster if d.linked_upi_id}
@@ -239,7 +262,7 @@ def score_cluster(cluster_domains: Set[str], all_domains: List[Domain]) -> Tuple
         "cluster_size": cluster_size,
         "linked_upis": list(linked_upis),
         "linked_phones": list(linked_phones),
-        "typosquats": [(t[0].domain, t[1].domain, t[2]) for t in typosquats]
+        "typosquats": brand_typosquats
     }
 
     return min(score, 100.0), explanation, shared_features

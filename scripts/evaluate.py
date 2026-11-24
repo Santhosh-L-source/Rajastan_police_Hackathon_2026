@@ -19,6 +19,18 @@ from backend.detection.features import extract_features
 from backend.detection.ml import detect_anomalies
 from backend.detection.scoring import score_accounts
 
+def normalize_account_name(account: str) -> str:
+    """Extract raw account number from prefixed account names."""
+    # Remove bank prefixes: SBI_ACCOUNT_, ICICI_ACCOUNT_, etc.
+    for prefix in ["SBI_ACCOUNT_", "ICICI_ACCOUNT_", "HDFC_ACCOUNT_", "AXIS_ACCOUNT_"]:
+        if account.startswith(prefix):
+            return account[len(prefix):]
+    # Also handle UPI IDs - keep as-is
+    if "@" in account:
+        return account
+    # Return as-is if no prefix
+    return account
+
 def evaluate_case(case_dir: Path, threshold: float = 50.0):
     """Evaluate detection for one case."""
     # Load ground truth
@@ -87,21 +99,26 @@ def evaluate_case(case_dir: Path, threshold: float = 50.0):
     # Score accounts
     scored = score_accounts(features_list)
 
-    # Evaluate
-    predicted_mules = set()
+    # Evaluate - normalize account names for comparison
+    predicted_mules_raw = set()
+    predicted_mules_full = {}  # Map normalized -> full name for display
     for features in scored:
         if features["suspicion_score"] >= threshold:
-            predicted_mules.add(features["account"])
+            full_name = features["account"]
+            # Skip special nodes
+            if any(x in full_name for x in ["ATM", "CRYPTO", "EXTERNAL"]):
+                continue
+            normalized = normalize_account_name(full_name)
+            # Skip victim
+            if normalized != victim:
+                predicted_mules_raw.add(normalized)
+                predicted_mules_full[normalized] = full_name
 
-    # Remove victim and special nodes
-    predicted_mules.discard(victim)
-    predicted_mules = {a for a in predicted_mules if not any(x in a for x in ["ATM", "CRYPTO", "EXTERNAL"])}
-
-    # Calculate metrics
-    tp = len(predicted_mules & true_mules)
-    fp = len(predicted_mules - true_mules)
-    fn = len(true_mules - predicted_mules)
-    tn = len(true_normals - predicted_mules)
+    # Calculate metrics using normalized names
+    tp = len(predicted_mules_raw & true_mules)
+    fp = len(predicted_mules_raw - true_mules)
+    fn = len(true_mules - predicted_mules_raw)
+    tn = len(true_normals - predicted_mules_raw)
 
     precision = tp / (tp + fp) if (tp + fp) > 0 else 0
     recall = tp / (tp + fn) if (tp + fn) > 0 else 0
@@ -117,9 +134,12 @@ def evaluate_case(case_dir: Path, threshold: float = 50.0):
     for i, features in enumerate(scored[:5]):
         acc = features["account"]
         score = features["suspicion_score"]
-        is_mule = "[MULE]" if acc in true_mules else "[NORMAL]"
+        normalized = normalize_account_name(acc)
+        is_mule = "[MULE]" if normalized in true_mules else "[NORMAL]"
         print(f"    {i+1}. {acc[:20]:20s} Score: {score:5.1f} {is_mule}")
-        print(f"       {features['explanation']}")
+        # Avoid unicode characters in explanation
+        explanation = features['explanation'].replace('₹', 'Rs.')
+        print(f"       {explanation}")
 
     return {
         "case": case_dir.name,

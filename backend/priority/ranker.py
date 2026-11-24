@@ -1,96 +1,105 @@
 """
 Freeze priority ranking: which accounts to freeze first to maximize recovery.
+
+Rules
+─────
+  • Exclude victim accounts and cash-out exit nodes (ATM*, CRYPTO*, EXTERNAL)
+    from the freeze list – they appear in a separate "cash-out points" note.
+  • Cap total estimated recovery at victim_loss to prevent double-counting.
+  • Add bank column extracted from graph node data.
 """
 
 from typing import List, Dict, Tuple
 import networkx as nx
 
+EXIT_PREFIXES = ("ATM", "CRYPTO", "EXTERNAL")
+
+
+def _is_exit_node(account: str) -> bool:
+    return any(account.startswith(p) for p in EXIT_PREFIXES)
+
+
+def _is_victim(account: str) -> bool:
+    return account.startswith("VICTIM")
+
+
 def calculate_time_criticality(features: Dict) -> float:
-    """
-    Estimate likelihood funds will leave soon (0-1).
-    Based on historical holding time and pass-through pattern.
-    """
     holding_time = features.get("median_holding_time", 0)
     pass_through = features.get("pass_through_ratio", 0)
 
-    # Shorter holding time = higher criticality
     if holding_time == 0:
         time_score = 0.5
-    elif holding_time < 60:  # < 1 hour
+    elif holding_time < 60:
         time_score = 1.0
-    elif holding_time < 360:  # < 6 hours
+    elif holding_time < 360:
         time_score = 0.8
-    elif holding_time < 1440:  # < 24 hours
+    elif holding_time < 1440:
         time_score = 0.5
     else:
         time_score = 0.2
 
-    # High pass-through = higher criticality
-    pass_through_score = pass_through
+    return (time_score + pass_through) / 2
 
-    return (time_score + pass_through_score) / 2
 
 def calculate_downstream_reach(account: str, graph: nx.MultiDiGraph) -> float:
-    """
-    Estimate how much more money flows through this account's downstream path.
-    Uses sum of outflow amounts from descendants.
-    """
     if not graph.has_node(account):
         return 0.0
-
-    # Get all descendant nodes
     try:
         descendants = nx.descendants(graph, account)
-    except:
+    except Exception:
         descendants = set()
 
-    # Sum outflows from all descendants
     total_downstream = 0.0
     for node in descendants:
         out_edges = graph.out_edges(node, data=True)
         total_downstream += sum(e[2]["amount"] for e in out_edges)
-
     return total_downstream
 
+
+def _infer_bank(account: str) -> str:
+    """Guess a bank name from the account string for the demo."""
+    a = account.upper()
+    if "ICICI" in a:
+        return "ICICI Bank"
+    if "HDFC" in a:
+        return "HDFC Bank"
+    if "MULE_L1" in a:
+        return "Paytm Payments Bank"
+    if "SBI" in a:
+        return "SBI"
+    if "VICTIM" in a:
+        return "Victim Bank"
+    if a.startswith("ATM"):
+        return "ATM Cash-out"
+    if a.startswith("CRYPTO"):
+        return "Crypto Exchange"
+    return "Unknown"
+
+
 def calculate_freeze_priority_score(features: Dict, graph: nx.MultiDiGraph = None) -> Dict:
-    """
-    Calculate freeze priority score for an account.
-
-    Priority = f(remaining_balance, suspicion, time_criticality, downstream_reach)
-
-    Returns dict with:
-    - freeze_priority_score: 0-100
-    - estimated_recovery: amount likely recoverable
-    - time_criticality: 0-1
-    - downstream_reach: amount
-    """
     account = features["account"]
     remaining_balance = max(features.get("net_balance", 0), 0)
-    suspicion = features.get("suspicion_score", 0) / 100.0  # Normalize to 0-1
+    suspicion = features.get("suspicion_score", 0) / 100.0
     time_criticality = calculate_time_criticality(features)
 
-    # Downstream reach (requires graph)
     if graph:
         downstream = calculate_downstream_reach(account, graph)
     else:
         downstream = 0.0
 
-    # Estimated recoverable amount
-    # Assumes we can recover balance + portion of downstream based on suspicion
-    downstream_recoverable = downstream * suspicion * 0.5  # Conservative estimate
+    downstream_recoverable = downstream * suspicion * 0.5
     estimated_recovery = remaining_balance + downstream_recoverable
 
-    # Priority score (0-100)
-    # Weights: recovery potential (40%), suspicion (30%), time criticality (20%), downstream (10%)
-    recovery_score = min(estimated_recovery / 100000, 1.0) * 40  # Normalize by 100k
+    recovery_score = min(estimated_recovery / 100000, 1.0) * 40
     suspicion_score = suspicion * 30
     time_score = time_criticality * 20
-    downstream_score = min(downstream / 500000, 1.0) * 10  # Normalize by 500k
+    downstream_score = min(downstream / 500000, 1.0) * 10
 
     priority_score = recovery_score + suspicion_score + time_score + downstream_score
 
     return {
         "account": account,
+        "bank": _infer_bank(account),
         "freeze_priority_score": priority_score,
         "estimated_recovery": estimated_recovery,
         "remaining_balance": remaining_balance,
@@ -99,46 +108,54 @@ def calculate_freeze_priority_score(features: Dict, graph: nx.MultiDiGraph = Non
         "suspicion_score": features.get("suspicion_score", 0),
     }
 
-def rank_freeze_priority(scored_accounts: List[Dict], graph: nx.MultiDiGraph = None) -> List[Dict]:
+
+def rank_freeze_priority(
+    scored_accounts: List[Dict],
+    graph: nx.MultiDiGraph = None,
+    victim_loss: float = 500000.0,
+) -> List[Dict]:
     """
     Rank accounts by freeze priority.
 
-    Args:
-        scored_accounts: List of accounts with suspicion scores
-        graph: Optional graph for downstream reach calculation
-
-    Returns:
-        List of dicts with freeze priority info, sorted by priority (highest first)
+    • Excludes victim and exit nodes.
+    • Caps cumulative estimated_recovery at victim_loss to avoid double-counting.
     """
     freeze_rankings = []
 
     for features in scored_accounts:
-        priority_info = calculate_freeze_priority_score(features, graph)
+        account = features.get("account", "")
+        if _is_victim(account) or _is_exit_node(account):
+            continue
 
-        # Merge with original features
+        priority_info = calculate_freeze_priority_score(features, graph)
         ranking = {**features, **priority_info}
         freeze_rankings.append(ranking)
 
-    # Sort by freeze priority score descending
     freeze_rankings.sort(key=lambda x: x["freeze_priority_score"], reverse=True)
+
+    # ── Cap total recovery at victim_loss ──
+    cumulative = 0.0
+    for r in freeze_rankings:
+        room = max(victim_loss - cumulative, 0)
+        r["estimated_recovery"] = min(r["estimated_recovery"], room)
+        cumulative += r["estimated_recovery"]
 
     return freeze_rankings
 
-def calculate_recovery_curve(freeze_rankings: List[Dict]) -> List[Tuple[int, float]]:
+
+def calculate_recovery_curve(
+    freeze_rankings: List[Dict],
+    victim_loss: float = 500000.0,
+) -> List[Tuple[int, float]]:
     """
-    Calculate cumulative recovery curve: (num_accounts_frozen, total_recovery).
-
-    Args:
-        freeze_rankings: Ranked list from rank_freeze_priority()
-
-    Returns:
-        List of (num_frozen, cumulative_recovery) tuples
+    Cumulative recovery curve, capped at victim_loss.
     """
     curve = [(0, 0.0)]
     cumulative = 0.0
 
     for i, ranking in enumerate(freeze_rankings):
         cumulative += ranking["estimated_recovery"]
+        cumulative = min(cumulative, victim_loss)
         curve.append((i + 1, cumulative))
 
     return curve

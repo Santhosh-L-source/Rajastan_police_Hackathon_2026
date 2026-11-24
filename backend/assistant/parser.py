@@ -17,17 +17,46 @@ def parse_query_rule_based(query: str) -> Tuple[Intent, Dict]:
     """
     query_lower = query.lower().strip()
 
-    # Trace money (check before list accounts to avoid "money" keyword conflict)
-    if any(keyword in query_lower for keyword in ["trace money", "follow money", "money trail", "trace from"]):
+    # Freeze priority (check early to prevent other "accounts" matches)
+    if any(keyword in query_lower for keyword in ["freeze", "priority", "accounts to freeze", "accounts should we freeze", "accounts to target"]) or \
+       (("which" in query_lower or "what" in query_lower) and "accounts" in query_lower and ("first" in query_lower or "should" in query_lower)):
+        params = {}
+        # Extract number
+        match = re.search(r"top (\d+)", query_lower)
+        if match:
+            params["top_n"] = int(match.group(1))
+        else:
+            # Check for "first" pattern
+            if "first" in query_lower or "should we" in query_lower:
+                params["top_n"] = 3
+            else:
+                params["top_n"] = 10
+        return Intent.FREEZE_PRIORITY, params
+
+    # Path between entities (check before trace money)
+    if any(keyword in query_lower for keyword in ["path from", "path between", "connect", "link between"]) or \
+       (("from" in query_lower and "to" in query_lower) and not "trace" in query_lower):
+        params = {}
+        # Pattern: "path from X to Y" or "path between (the) X and Y"
+        match = re.search(r"from (?:the )?([a-z0-9_@.-]+) to (?:the )?([a-z0-9_@.-]+)", query_lower)
+        if not match:
+            match = re.search(r"(?:between|are) (?:the )?([a-z0-9_@.-]+) (?:and|to) (?:the )?([a-z0-9_@.-]+)", query_lower)
+        if match:
+            params["source"] = match.group(1)
+            params["target"] = match.group(2)
+        return Intent.PATH_BETWEEN, params
+
+    # Trace money
+    if any(keyword in query_lower for keyword in ["trace money", "follow money", "money trail", "trace from", "received money", "received from"]):
         params = {}
         # Extract account/entity after "from"
-        match = re.search(r"from ([a-z0-9_@.]+)", query_lower)
+        match = re.search(r"from (?:the )?(?:scam )?([a-z0-9_@.]+|victim)", query_lower)
         if match:
             params["source"] = match.group(1)
         return Intent.TRACE_MONEY, params
 
     # List accounts
-    if any(keyword in query_lower for keyword in ["list accounts", "show accounts", "which accounts", "list all"]):
+    if any(keyword in query_lower for keyword in ["list accounts", "show accounts", "list all"]) and "freeze" not in query_lower:
         params = {}
         # Extract filters
         if "suspicious" in query_lower or "mule" in query_lower:
@@ -39,20 +68,13 @@ def parse_query_rule_based(query: str) -> Tuple[Intent, Dict]:
                 params["received_from"] = match.group(1)
         return Intent.LIST_ACCOUNTS, params
 
-    # Freeze priority
-    if any(keyword in query_lower for keyword in ["freeze", "priority", "which accounts to freeze", "top accounts"]):
-        params = {}
-        # Extract number
-        match = re.search(r"top (\d+)", query_lower)
-        if match:
-            params["top_n"] = int(match.group(1))
-        else:
-            params["top_n"] = 10
-        return Intent.FREEZE_PRIORITY, params
-
     # Domain clusters
-    if any(keyword in query_lower for keyword in ["domain cluster", "scam domains", "infrastructure cluster", "related domains"]):
+    if any(keyword in query_lower for keyword in ["domain cluster", "scam domains", "infrastructure cluster", "related domains", "share an ip", "share ip", "same ip", "name server"]):
         params = {}
+        # Extract domain if mentioned
+        match = re.search(r"(?:with|as) ([a-z0-9-]+\.(com|net|org|in))", query_lower)
+        if match:
+            params["reference_domain"] = match.group(1)
         return Intent.DOMAIN_CLUSTER, params
 
     # Path between entities

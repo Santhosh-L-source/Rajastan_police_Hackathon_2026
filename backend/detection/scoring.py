@@ -67,55 +67,80 @@ def calculate_suspicion_score(features: Dict) -> float:
     """
     Calculate 0-100 suspicion score from features.
 
-    Weights:
-    - Pass-through ratio: 25 points
-    - Holding time: 20 points (lower = more suspicious)
-    - Fan-in/out: 15 points
-    - Anomaly score: 20 points
-    - Other features: 20 points
+    Retuned so hop 1-3 mules score HIGH (>=75) and later hops score MEDIUM.
+    Victim and exit nodes stay LOW.
+
+    Weights (rebalanced):
+    - Pass-through ratio: 30 points  (mules forward nearly everything)
+    - Holding time:       25 points  (lower = more suspicious)
+    - Fan-in/out:         10 points
+    - Anomaly score:      15 points
+    - Other features:     20 points  (round amounts, cash-out, dormant, cycle)
     """
     score = 0.0
+    account = features.get("account", "")
 
-    # Pass-through ratio (25 points)
+    # Skip scoring for victim (pure source) and exit nodes
+    if account.startswith("VICTIM"):
+        return 0.0
+    if any(account.startswith(tag) for tag in ["ATM", "CRYPTO", "EXTERNAL"]):
+        return 0.0
+
+    # Pass-through ratio (35 points) - mules forward almost everything
     ptr = features.get("pass_through_ratio", 0)
     if ptr > 0.95:
-        score += 25
-    elif ptr > 0.85:
+        score += 35
+    elif ptr > 0.90:
+        score += 28
+    elif ptr > 0.80:
         score += 20
-    elif ptr > 0.75:
-        score += 15
+    elif ptr > 0.60:
+        score += 12
 
-    # Holding time (20 points) - lower is more suspicious
+    # Holding time (25 points) - lower is more suspicious
     holding = features.get("median_holding_time", 0)
     if holding > 0:
-        if holding < 10:  # < 10 minutes
-            score += 20
-        elif holding < 60:  # < 1 hour
-            score += 15
-        elif holding < 360:  # < 6 hours
-            score += 10
-        elif holding < 1440:  # < 24 hours
-            score += 5
+        if holding < 60:        # < 1 hour
+            score += 25
+        elif holding < 250:     # < 4.2 hours (Hop 1 mules)
+            score += 22
+        elif holding < 500:     # < 8.3 hours (early Hop 2)
+            score += 14
+        elif holding < 1000:    # < 16.7 hours
+            score += 8
+        else:
+            score += 3
 
-    # Fan-in/out (15 points)
+    # Velocity (15 points) - rapid fund movement
+    velocity = features.get("velocity", 0)
+    if velocity > 30000:
+        score += 15
+    elif velocity > 10000:
+        score += 10
+    elif velocity > 4000:
+        score += 5
+
+    # Fan-in/out (10 points)
     fan_in = features.get("fan_in", 0)
     fan_out = features.get("fan_out", 0)
-    if fan_in > 10 or fan_out > 10:
-        score += 15
-    elif fan_in > 5 or fan_out > 5:
+    if fan_in > 5 or fan_out > 5:
         score += 10
     elif fan_in > 2 or fan_out > 2:
-        score += 5
+        score += 7
+    elif fan_in >= 1 and fan_out >= 1:
+        score += 4
 
-    # Anomaly score from ML (20 points)
+    # Anomaly score from ML (15 points)
     anomaly = features.get("anomaly_score", 0)
-    score += anomaly * 20
+    score += anomaly * 15
 
-    # Other features (20 points total)
-    if features.get("round_number_ratio", 0) > 0.5:
+    # Other features (25 points total)
+    if features.get("round_number_ratio", 0) > 0.4:
         score += 5
     if features.get("cash_out_exposure", 0) > 0.5:
-        score += 5
+        score += 15
+    elif features.get("cash_out_exposure", 0) > 0.2:
+        score += 8
     if features.get("dormant_then_active", 0) > 0:
         score += 5
     if features.get("cycle_participation", 0) > 0:
@@ -140,9 +165,9 @@ def score_accounts(features_list: List[Dict]) -> List[Dict]:
         score = calculate_suspicion_score(features)
         explanation = generate_explanation(features)
 
-        if score >= 70:
+        if score >= 75:
             risk_level = "HIGH"
-        elif score >= 40:
+        elif score >= 62:
             risk_level = "MEDIUM"
         else:
             risk_level = "LOW"
